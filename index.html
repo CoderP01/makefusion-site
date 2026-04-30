@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pedro — Editor de Vídeos & Motion Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #CAFF00;
+      --black: #0a0a0a;
+      --dark: #111111;
+      --card: #161616;
+      --white: #f5f5f5;
+      --gray: #888888;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #222;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      color: var(--green);
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 5rem;
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3rem 5rem 4rem;
+    }
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--green);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 10vw, 10rem);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s forwards;
+    }
+    .hero-title span { color: var(--green); }
+    .hero-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--gray);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+    .hero-line {
+      font-size: 1.05rem;
+      color: var(--white);
+      line-height: 1.6;
+      margin-top: 2.5rem;
+      max-width: 440px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s forwards;
+    }
+    .hero-cta {
+      display: inline-block;
+      margin-top: 2.5rem;
+      padding: 0.9rem 2.2rem;
+      background: var(--green);
+      color: var(--black);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s forwards;
+    }
+    .hero-cta:hover { transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--white); }
+
+    .hero-right {
+      position: relative;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(202,255,0,0.12) 0%, transparent 65%);
+    }
+    .hero-big-text {
+      font-family: var(--font-display);
+      font-size: clamp(8rem, 16vw, 18rem);
+      color: rgba(202,255,0,0.06);
+      letter-spacing: -0.02em;
+      position: absolute;
+      bottom: -2rem;
+      right: -1rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .tools-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 1;
+    }
+    .tool-pill {
+      padding: 0.6rem 1.4rem;
+      border: 1px solid #2a2a2a;
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--gray);
+      background: rgba(255,255,255,0.02);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tool-pill:hover { border-color: var(--green); color: var(--green); }
+    .tool-pill.active { border-color: var(--green); color: var(--green); background: rgba(202,255,0,0.05); }
+
+    /* SECTION BASE */
+    section {
+      padding: 6rem 4rem;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--green);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    /* TAGLINE BAND */
+    .tagline-band {
+      background: var(--green);
+      overflow: hidden;
+      padding: 1.2rem 0;
+      white-space: nowrap;
+    }
+    .tagline-inner {
+      display: inline-flex;
+      gap: 4rem;
+      animation: marquee 18s linear infinite;
+    }
+    .tagline-inner span {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--black);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tagline-inner .dot {
+      color: rgba(0,0,0,0.3);
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* SERVICES */
+    .services { background: var(--dark); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5px;
+      background: #222;
+      border: 1.5px solid #222;
+    }
+    .service-card {
+      background: var(--card);
+      padding: 3rem;
+      transition: background 0.3s;
+    }
+    .service-card:hover { background: #1c1c1c; }
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+    }
+    .service-card h3 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--white);
+    }
+    .service-card p {
+      color: var(--gray);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      padding: 0.3rem 0.8rem;
+      border: 1px solid #333;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gray);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .tag.green { border-color: var(--green); color: var(--green); }
+
+    /* PROCESSO */
+    .processo { background: var(--black); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5px;
+      background: #1e1e1e;
+      border: 1.5px solid #1e1e1e;
+      margin-top: 1rem;
+    }
+    .step {
+      background: var(--black);
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+    .step-number {
+      font-family: var(--font-display);
+      font-size: 5rem;
+      color: rgba(202,255,0,0.08);
+      line-height: 1;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+    .step-tag {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      background: var(--green);
+      color: var(--black);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .step h4 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .step p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.65;
+    }
+
+    /* PORTFÓLIO */
+    .portfolio { background: var(--black); padding: 6rem 4rem; }
+    .portfolio-category { margin-bottom: 4rem; }
+    .portfolio-category:last-child { margin-bottom: 0; }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .category-header h3 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .category-line {
+      flex: 1;
+      height: 1px;
+      background: #222;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .video-card {
+      position: relative;
+      aspect-ratio: 9/16;
+      background: var(--card);
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid #1e1e1e;
+      transition: border-color 0.2s;
+    }
+    .video-card:hover { border-color: var(--green); }
+    .video-card iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      color: #333;
+      transition: color 0.2s;
+    }
+    .video-card:hover .video-placeholder { color: var(--green); }
+    .video-placeholder svg { opacity: 0.4; transition: opacity 0.2s; }
+    .video-card:hover .video-placeholder svg { opacity: 1; }
+    .video-placeholder span {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .video-card-wide {
+      aspect-ratio: 16/9;
+    }
+    .portfolio-wide-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 768px) {
+      .video-grid { grid-template-columns: repeat(2, 1fr); }
+      .portfolio { padding: 4rem 1.5rem; }
+    }
+
+    /* MARCAS */
+    .marcas { background: var(--dark); }
+    .brands-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .brand-pill {
+      padding: 0.65rem 1.4rem;
+      border: 1px solid #2a2a2a;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--gray);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .brand-pill:hover { border-color: var(--green); color: var(--green); }
+
+    /* CONTATO */
+    .contato {
+      background: var(--green);
+      padding: 6rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+    }
+    .contato .section-label { color: rgba(0,0,0,0.5); }
+    .contato .section-title { color: var(--black); margin-bottom: 0; }
+    .contato-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contato-item a {
+      display: block;
+      color: var(--black);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+      transition: opacity 0.2s;
+    }
+    .contato-item a:hover { opacity: 0.6; }
+    .contato-item-label {
+      font-size: 0.75rem;
+      color: rgba(0,0,0,0.5);
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .social-row { display: flex; gap: 1rem; margin-top: 1rem; }
+    .social-btn {
+      padding: 0.6rem 1.2rem;
+      background: var(--black);
+      color: var(--green);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .social-btn:hover { opacity: 0.8; }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 1px solid #1a1a1a;
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: #444;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 6rem 1.5rem 3rem; }
+      section { padding: 4rem 1.5rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .contato { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Pedro.</div>
+    <div class="nav-links">
+      <a href="#servicos">Serviços</a>
+      <a href="#processo">Processo</a>
+      <a href="#marcas">Marcas</a>
+      <a href="#contato">Contato</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-tag">Editor de Vídeos & Motion Designer</p>
+      <h1 class="hero-title">Olá,<br>Sou o<br><span>Pedro!</span></h1>
+      <p class="hero-subtitle">After Effects · Premiere Pro · Motion</p>
+      <p class="hero-line">Movimento com intenção, corte com ritmo e identidade em cada frame. Vídeos que não só informam, mas que fazem sentir.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:2.5rem;opacity:0;animation:fadeUp 0.7s 0.8s forwards;">
+        <a href="#contato" class="hero-cta" style="margin-top:0;">Trabalhar Juntos →</a>
+        <a href="#" target="_blank" class="hero-cta" style="margin-top:0;background:transparent;color:var(--green);border:1.5px solid var(--green);">Ver Portfólio ↗</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="tools-grid">
+        <div class="tool-pill active">After Effects</div>
+        <div class="tool-pill active">Premiere Pro</div>
+        <div class="tool-pill">Reels</div>
+        <div class="tool-pill">Youtube</div>
+        <div class="tool-pill">Animações</div>
+        <div class="tool-pill">Tutoriais</div>
+        <div class="tool-pill">Intros</div>
+      </div>
+      <div class="hero-big-text">MV</div>
+    </div>
+  </section>
+
+  <!-- TAGLINE BAND -->
+  <div class="tagline-band">
+    <div class="tagline-inner">
+      <span>Do raw ao refinado</span><span class="dot">✦</span>
+      <span>Corte rítmico</span><span class="dot">✦</span>
+      <span>Narrativa visual</span><span class="dot">✦</span>
+      <span>Identidade em movimento</span><span class="dot">✦</span>
+      <span>Do raw ao refinado</span><span class="dot">✦</span>
+      <span>Corte rítmico</span><span class="dot">✦</span>
+      <span>Narrativa visual</span><span class="dot">✦</span>
+      <span>Identidade em movimento</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <!-- SERVIÇOS -->
+  <section id="servicos" class="services">
+    <p class="section-label">// O que faço</p>
+    <h2 class="section-title">Serviços</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🎬</div>
+        <h3>Edição de Vídeo</h3>
+        <p>Do raw ao refinado. Corte rítmico, sincronização com áudio, narrativa visual que mantém a atenção do início ao fim.</p>
+        <div class="tags">
+          <span class="tag green">Premiere Pro</span>
+          <span class="tag green">Reels</span>
+          <span class="tag">Youtube</span>
+          <span class="tag">Tutoriais</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Motion Design</h3>
+        <p>Animações que falam pela marca. Identidade em movimento: intros, transições, textos animados, loops.</p>
+        <div class="tags">
+          <span class="tag green">After Effects</span>
+          <span class="tag green">Animações</span>
+          <span class="tag">Intros</span>
+          <span class="tag">Motion Institucional</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section id="processo" class="processo">
+    <p class="section-label">// Como trabalho</p>
+    <h2 class="section-title">Processo</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-tag">#1</div>
+        <h4>Briefing</h4>
+        <p>Entendo a marca, o objetivo, o público. Sem briefing não existe vídeo bom, só vídeo bonito.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-tag">#2</div>
+        <h4>Conceito</h4>
+        <p>Proposta de referências visuais, paleta e ritmo antes de editar um único frame.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-tag">#3</div>
+        <h4>Produção</h4>
+        <p>Edição, cortes, legendas, motion — com prazos definidos e comunicação clara em cada etapa.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-tag">#4</div>
+        <h4>Entrega</h4>
+        <p>Arquivos organizados no Drive, otimizados para cada plataforma e entregues na mais alta qualidade. Revisão inclusa.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFÓLIO -->
+  <section class="portfolio">
+    <p class="section-label">// Trabalhos</p>
+    <h2 class="section-title" style="margin-bottom:3rem;">Portfólio</h2>
+
+    <!-- Edição de Vídeo 1 -->
+    <div class="portfolio-category">
+      <div class="category-header">
+        <h3>Edição de Vídeo</h3>
+        <div class="category-line"></div>
+      </div>
+      <div class="video-grid">
+        <div class="video-card">
+          <iframe loading="lazy" style="position:absolute;width:100%;height:100%;top:0;left:0;border:none;padding:0;margin:0;"
+            src="https://www.canva.com/design/DAHISQE2w88/_gPnHgrvFF_CbFUnQL815Q/view?embed"
+            allowfullscreen allow="fullscreen"></iframe>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edição de Vídeo 2 -->
+    <div class="portfolio-category">
+      <div class="category-header">
+        <h3>Edição de Vídeo</h3>
+        <div class="category-line"></div>
+      </div>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motion -->
+    <div class="portfolio-category">
+      <div class="category-header">
+        <h3>Motion</h3>
+        <div class="category-line"></div>
+      </div>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motion 2 -->
+    <div class="portfolio-category">
+      <div class="category-header">
+        <h3>Motion</h3>
+        <div class="category-line"></div>
+      </div>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motion Institucional -->
+    <div class="portfolio-category">
+      <div class="category-header">
+        <h3>Motion Institucional</h3>
+        <div class="category-line"></div>
+      </div>
+      <div class="portfolio-wide-grid">
+        <div class="video-card video-card-wide">
+          <div class="video-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>Adicionar vídeo institucional</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARCAS -->
+  <section id="marcas" class="marcas">
+    <p class="section-label">// Com quem colaborei</p>
+    <h2 class="section-title">Marcas</h2>
+    <div class="brands-row">
+      <div class="brand-pill">schematiq</div>
+      <div class="brand-pill">Cura Mais</div>
+      <div class="brand-pill">MEMENTO</div>
+      <div class="brand-pill">Verde & Céu</div>
+      <div class="brand-pill">Espaço Conceito Ltda.</div>
+      <div class="brand-pill">Grupozero</div>
+      <div class="brand-pill">Fundação da Vida Selvagem</div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato" class="contato">
+    <div>
+      <p class="section-label">// Vamos trabalhar</p>
+      <h2 class="section-title">Será um prazer trabalhar com você!</h2>
+    </div>
+    <div class="contato-info">
+      <div class="contato-item">
+        <div class="contato-item-label">E-mail</div>
+        <a href="mailto:contato.joaopedrolemos@gmail.com">CONTATO.JOAOPEDROLEMOS@GMAIL.COM</a>
+      </div>
+      <div class="social-row">
+        <a href="#" class="social-btn">Instagram</a>
+        <a href="#" class="social-btn">LinkedIn</a>
+        <a href="#" class="social-btn">Twitter</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHATSAPP FLOAT -->
+  <a href="https://wa.me/5595991713094" target="_blank" title="Orçamento via WhatsApp" style="
+    position:fixed;
+    bottom:1.8rem;
+    right:1.8rem;
+    z-index:200;
+    background:#25D366;
+    color:#fff;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 20px rgba(37,211,102,0.4);
+    transition:transform 0.2s,box-shadow 0.2s;
+    text-decoration:none;
+  " onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 6px 28px rgba(37,211,102,0.6)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(37,211,102,0.4)'">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Pedro — Editor & Motion Designer</span>
+    <span>Feito com intenção.</span>
+  </footer>
+
+</body>
+</html>
