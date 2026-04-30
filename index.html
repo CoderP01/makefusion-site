@@ -466,26 +466,46 @@
     .slider-prev { left: 0.8rem; }
     .slider-next { right: 0.8rem; }
 
-    /* HERO SLIDER */
+    /* MARCAS */
     .marcas { background: var(--dark); }
-    .brands-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .brands-marquee-wrap {
+      margin-top: 2.5rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .brands-marquee-wrap::before,
+    .brands-marquee-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .brands-marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--dark), transparent); }
+    .brands-marquee-wrap::after  { right: 0; background: linear-gradient(to left, var(--dark), transparent); }
+    .brands-track {
+      display: inline-flex;
       align-items: center;
-      margin-top: 1rem;
+      gap: 2rem;
+      white-space: nowrap;
+      animation: brandScroll 30s linear infinite;
     }
-    .brand-pill {
-      padding: 0.65rem 1.4rem;
-      border: 1px solid #2a2a2a;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--gray);
-      letter-spacing: 0.08em;
+    .brands-track:hover { animation-play-state: paused; }
+    .brands-track span {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
       text-transform: uppercase;
-      transition: all 0.2s;
+      transition: color 0.2s;
     }
-    .brand-pill:hover { border-color: var(--green); color: var(--green); }
+    .brands-track span:hover { color: var(--green); }
+    .brands-track .sep { color: var(--green); font-size: 0.8rem; }
+    @keyframes brandScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
     /* CONTATO */
     .contato {
@@ -831,14 +851,34 @@
   <section id="marcas" class="marcas">
     <p class="section-label">// Com quem colaborei</p>
     <h2 class="section-title">Marcas</h2>
-    <div class="brands-row">
-      <div class="brand-pill">schematiq</div>
-      <div class="brand-pill">Cura Mais</div>
-      <div class="brand-pill">MEMENTO</div>
-      <div class="brand-pill">Verde & Céu</div>
-      <div class="brand-pill">Espaço Conceito Ltda.</div>
-      <div class="brand-pill">Grupozero</div>
-      <div class="brand-pill">Fundação da Vida Selvagem</div>
+    <div class="brands-marquee-wrap">
+      <div class="brands-marquee">
+        <div class="brands-track">
+          <span>ONBASS</span><span class="sep">✦</span>
+          <span>PORÃO DO ALEMÃO</span><span class="sep">✦</span>
+          <span>FIRE SPORT</span><span class="sep">✦</span>
+          <span>AMERICAN FEST</span><span class="sep">✦</span>
+          <span>HIT STUDIO CRIATIVO</span><span class="sep">✦</span>
+          <span>PÉ NA AREIA</span><span class="sep">✦</span>
+          <span>TONIOLLI</span><span class="sep">✦</span>
+          <span>OLD ROY</span><span class="sep">✦</span>
+          <span>CANTINHO DA TIA PATTY</span><span class="sep">✦</span>
+          <span>RORAIMA MOTOCLUBE XVII</span><span class="sep">✦</span>
+          <span>GRUV</span><span class="sep">✦</span>
+          <!-- duplicado para loop contínuo -->
+          <span>ONBASS</span><span class="sep">✦</span>
+          <span>PORÃO DO ALEMÃO</span><span class="sep">✦</span>
+          <span>FIRE SPORT</span><span class="sep">✦</span>
+          <span>AMERICAN FEST</span><span class="sep">✦</span>
+          <span>HIT STUDIO CRIATIVO</span><span class="sep">✦</span>
+          <span>PÉ NA AREIA</span><span class="sep">✦</span>
+          <span>TONIOLLI</span><span class="sep">✦</span>
+          <span>OLD ROY</span><span class="sep">✦</span>
+          <span>CANTINHO DA TIA PATTY</span><span class="sep">✦</span>
+          <span>RORAIMA MOTOCLUBE XVII</span><span class="sep">✦</span>
+          <span>GRUV</span><span class="sep">✦</span>
+        </div>
+      </div>
     </div>
   </section>
 
