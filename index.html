@@ -273,48 +273,49 @@
     .processo { background: var(--black); }
     .steps {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 1.5px;
       background: #1e1e1e;
       border: 1.5px solid #1e1e1e;
       margin-top: 1rem;
     }
     .step {
-      background: var(--black);
-      padding: 2.5rem 2rem;
+      background: #141414;
+      padding: 2.5rem 2rem 2.5rem 2rem;
       position: relative;
+      overflow: hidden;
+      min-height: 220px;
     }
     .step-number {
       font-family: var(--font-display);
-      font-size: 5rem;
-      color: rgba(202,255,0,0.08);
+      font-size: 7rem;
+      color: rgba(255,255,255,0.05);
       line-height: 1;
       position: absolute;
-      top: 1rem;
-      right: 1.5rem;
+      bottom: 0.5rem;
+      right: 1rem;
+      pointer-events: none;
     }
-    .step-tag {
-      display: inline-block;
-      padding: 0.25rem 0.7rem;
+    .step-bullet {
+      width: 8px;
+      height: 8px;
       background: var(--green);
-      color: var(--black);
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      font-weight: bold;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
+      border-radius: 50%;
+      margin-bottom: 1.2rem;
     }
     .step h4 {
       font-family: var(--font-display);
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
       margin-bottom: 0.8rem;
+      color: var(--green);
     }
     .step p {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--gray);
       line-height: 1.65;
+      max-width: 280px;
     }
 
     /* PORTFÓLIO */
@@ -392,7 +393,80 @@
       .portfolio { padding: 4rem 1.5rem; }
     }
 
-    /* MARCAS */
+    /* HERO SLIDER */
+    .hero-slider {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .slider-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.77, 0, 0.18, 1);
+    }
+    .slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide iframe {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%);
+      border: none;
+      pointer-events: none;
+    }
+    .slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(10,10,10,0.5) 0%, transparent 30%, transparent 70%, rgba(10,10,10,0.3) 100%);
+      pointer-events: none;
+    }
+    .slider-dots {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+    .slider-dots .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .slider-dots .dot.active {
+      background: var(--green);
+      transform: scale(1.4);
+    }
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white);
+      width: 36px; height: 36px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .slider-btn:hover { background: var(--green); color: var(--black); border-color: var(--green); }
+    .slider-prev { left: 0.8rem; }
+    .slider-next { right: 0.8rem; }
+
+    /* HERO SLIDER */
     .marcas { background: var(--dark); }
     .brands-row {
       display: flex;
@@ -522,17 +596,51 @@
       </div>
     </div>
     <div class="hero-right">
-      <div class="tools-grid">
-        <div class="tool-pill active">After Effects</div>
-        <div class="tool-pill active">Premiere Pro</div>
-        <div class="tool-pill">Reels</div>
-        <div class="tool-pill">Youtube</div>
-        <div class="tool-pill">Animações</div>
-        <div class="tool-pill">Tutoriais</div>
-        <div class="tool-pill">Intros</div>
+      <div class="hero-slider">
+        <div class="slider-track" id="sliderTrack">
+          <div class="slide"><iframe src="https://www.youtube.com/embed/QhW_-jpAivU?autoplay=1&mute=1&loop=1&playlist=QhW_-jpAivU&controls=0&modestbranding=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+          <div class="slide"><iframe src="https://www.youtube.com/embed/AUxWQ1nqcT8?autoplay=1&mute=1&loop=1&playlist=AUxWQ1nqcT8&controls=0&modestbranding=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+          <div class="slide"><iframe src="https://www.youtube.com/embed/SPsKTmHi80I?autoplay=1&mute=1&loop=1&playlist=SPsKTmHi80I&controls=0&modestbranding=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+          <div class="slide"><iframe src="https://www.youtube.com/embed/wdxpHa50isM?autoplay=1&mute=1&loop=1&playlist=wdxpHa50isM&controls=0&modestbranding=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+          <div class="slide"><iframe src="https://www.youtube.com/embed/VzoDFhoqGTs?autoplay=1&mute=1&loop=1&playlist=VzoDFhoqGTs&controls=0&modestbranding=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+          <div class="slide"><iframe src="https://www.youtube.com/embed/VJg5JWaFvmE?autoplay=1&mute=1&loop=1&playlist=VJg5JWaFvmE&controls=0&modestbranding=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+        </div>
+        <div class="slider-dots" id="sliderDots"></div>
+        <button class="slider-btn slider-prev" onclick="slideMove(-1)">&#8592;</button>
+        <button class="slider-btn slider-next" onclick="slideMove(1)">&#8594;</button>
       </div>
-      <div class="hero-big-text">MV</div>
     </div>
+
+  <script>
+    const track = document.getElementById('sliderTrack');
+    const dotsContainer = document.getElementById('sliderDots');
+    const slides = track.querySelectorAll('.slide');
+    let current = 0;
+    let timer;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('span');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goTo(i);
+      dotsContainer.appendChild(dot);
+    });
+
+    function goTo(n) {
+      current = (n + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dotsContainer.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+      resetTimer();
+    }
+
+    function slideMove(dir) { goTo(current + dir); }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(current + 1), 5000);
+    }
+
+    resetTimer();
+  </script>
   </section>
 
   <!-- TAGLINE BAND -->
@@ -585,28 +693,28 @@
     <h2 class="section-title">Processo</h2>
     <div class="steps">
       <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-tag">#1</div>
+        <div class="step-bullet"></div>
+        <div class="step-number">01</div>
         <h4>Briefing</h4>
         <p>Entendo a marca, o objetivo, o público. Sem briefing não existe vídeo bom, só vídeo bonito.</p>
       </div>
       <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-tag">#2</div>
+        <div class="step-bullet"></div>
+        <div class="step-number">02</div>
         <h4>Conceito</h4>
         <p>Proposta de referências visuais, paleta e ritmo antes de editar um único frame.</p>
       </div>
       <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-tag">#3</div>
+        <div class="step-bullet"></div>
+        <div class="step-number">03</div>
         <h4>Produção</h4>
-        <p>Edição, cortes, legendas, motion — com prazos definidos e comunicação clara em cada etapa.</p>
+        <p>Edição, motion e color grading com prazo definido e comunicação clara em cada etapa.</p>
       </div>
       <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-tag">#4</div>
+        <div class="step-bullet"></div>
+        <div class="step-number">04</div>
         <h4>Entrega</h4>
-        <p>Arquivos organizados no Drive, otimizados para cada plataforma e entregues na mais alta qualidade. Revisão inclusa.</p>
+        <p>Arquivos otimizados para cada plataforma. Revisão inclusa. Sem surpresa de escopo.</p>
       </div>
     </div>
   </section>
